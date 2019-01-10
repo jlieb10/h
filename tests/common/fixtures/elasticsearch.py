@@ -23,6 +23,8 @@ def es_client():
         # See https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-delete-by-query.html#docs-delete-by-query.
         # Regardless of what happened during the test, all annotations should be removed from the index.
         conflicts="proceed",
+        # Add refresh to propogate the mark for deletion to all shards.
+        refresh=True,
     )
 
 
