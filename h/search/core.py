@@ -89,8 +89,14 @@ class Search(object):
         return SearchResult(total, annotation_ids, reply_ids, aggregations)
 
     def clear(self):
-        """Clear search modifiers, aggregators, and matchers."""
-        self._modifiers = [query.Sorter()]
+        """
+        Clear search modifiers, aggregators, and matchers except Sorter and DeletedFilter.
+
+        Sorter is kept because it is useful to return annotations in a certain order and
+        DeletedFilter is kept because otherwise deleted annotations will show up in search
+        results otherwise.
+        """
+        self._modifiers = [query.Sorter(), query.DeletedFilter()]
         self._aggregations = []
 
     def append_modifier(self, modifier):

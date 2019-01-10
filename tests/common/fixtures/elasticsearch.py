@@ -19,8 +19,9 @@ def es_client():
         index=client.index,
         body={"query": {"match_all": {}}},
         # This query occassionally fails with a version conflict.
-        # Forcing the deletion resolves the issue, but the exact
-        # cause of the version conflict has not been found yet.
+        # This happens during tests that update/delete annotations.
+        # See https://www.elastic.co/guide/en/elasticsearch/reference/current/docs-delete-by-query.html#docs-delete-by-query.
+        # Regardless of what happened during the test, all annotations should be removed from the index.
         conflicts="proceed",
     )
 
