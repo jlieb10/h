@@ -5,7 +5,7 @@ from __future__ import unicode_literals
 from webob.multidict import MultiDict
 
 from h.search import Search
-from h.search import Limiter, DeletedFilter, UserFilter, TopLevelAnnotationsFilter
+from h.search import Limiter, UserFilter, TopLevelAnnotationsFilter
 
 
 class AnnotationStatsService(object):
@@ -36,7 +36,6 @@ class AnnotationStatsService(object):
         search = Search(self.request, stats=self.request.stats)
         search.clear()
         search.append_modifier(Limiter())
-        search.append_modifier(DeletedFilter())
         search.append_modifier(UserFilter())
 
         search_result = search.run(params)

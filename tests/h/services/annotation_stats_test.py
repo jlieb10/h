@@ -8,7 +8,7 @@ import pytest
 from h.services.annotation_stats import AnnotationStatsService
 from h.services.annotation_stats import annotation_stats_factory
 from h.search import Search
-from h.search import Limiter, DeletedFilter, UserFilter, TopLevelAnnotationsFilter
+from h.search import Limiter, UserFilter, TopLevelAnnotationsFilter
 
 
 class TestAnnotationStatsService(object):
@@ -27,19 +27,15 @@ class TestAnnotationStatsService(object):
         search.return_value.run.assert_called_with({"limit": 0, "user": "userid"})
 
     def test_toal_user_annotation_count_attaches_correct_modifiers(
-        self, svc, search, limiter, deleted_filter, user_filter
+        self, svc, search, limiter, user_filter
     ):
         svc.total_user_annotation_count("userid")
 
         assert search.return_value.clear.called
 
-        assert search.return_value.append_modifier.call_count == 3
+        assert search.return_value.append_modifier.call_count == 2
         search.return_value.append_modifier.assert_has_calls(
-            [
-                mock.call(limiter.return_value),
-                mock.call(deleted_filter.return_value),
-                mock.call(user_filter.return_value),
-            ]
+            [mock.call(limiter.return_value), mock.call(user_filter.return_value)]
         )
 
     def test_total_user_annotation_count_returns_total(self, svc, search):
@@ -147,15 +143,6 @@ def top_level_annotation_filter(patch):
 @pytest.fixture
 def limiter(patch):
     return patch("h.services.annotation_stats.Limiter", autospec=Limiter, spec_set=True)
-
-
-@pytest.fixture
-def deleted_filter(patch):
-    return patch(
-        "h.services.annotation_stats.DeletedFilter",
-        autospec=DeletedFilter,
-        spec_set=True,
-    )
 
 
 @pytest.fixture

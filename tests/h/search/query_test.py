@@ -681,11 +681,6 @@ class TestDeletedFilter(object):
 
         assert sorted(result.annotation_ids) == sorted(not_deleted_ids)
 
-    @pytest.fixture
-    def search(self, search):
-        search.append_modifier(query.DeletedFilter())
-        return search
-
 
 @pytest.mark.usefixtures("pyramid_config")
 class TestHiddenFilter(object):
@@ -1056,7 +1051,7 @@ class TestUsersAggregation(object):
 @pytest.fixture
 def search(pyramid_request, group_service):
     search = Search(pyramid_request)
-    # Remove all default modifiers and aggregators except Sorter.
+    # Remove all default modifiers and aggregators except Sorter and DeletedFilter.
     search.clear()
     return search
 
